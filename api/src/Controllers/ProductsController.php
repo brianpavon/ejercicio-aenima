@@ -102,8 +102,7 @@ class ProductsController
                 $response->getBody()->write(GenericResponse::obtain(false,"Verifique haber cargado un archivo. O elija un formato permitido de imagen (JPG,JPEG,PNG)."));
                 $response->withStatus(400);
             }
-            else{
-                
+            else{                
                 
                 $newProduct = new Product();
                 $newProduct->name = $name;
@@ -111,8 +110,8 @@ class ProductsController
                 
                 
                 $newProduct->save();
-                $picturesProducts = __DIR__.'/../../products/'.$newProduct->id.'/';
-                $namePicture = $_FILES['img']['name'];
+                $picturesProducts = __DIR__.'/../../products/'.'product-'.$newProduct->id.'/';
+                $namePicture = date("d-m-Y-U", strtotime('now')).'-'.'product-id-'.$newProduct->id.'.'.$extension;
                 if(!file_exists($picturesProducts)){
                     mkdir($picturesProducts,0777,true);
                 }
