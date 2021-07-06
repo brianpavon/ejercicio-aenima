@@ -10,9 +10,11 @@ use Middlewares\CorsMiddleware;
 use Components\GenericResponse;
 
 use Controllers\ProductsController;
-use Controllers\UsersController;
+use Controllers\UserController;
+use Controllers\LoginController;
 
 require __DIR__ . '/../vendor/autoload.php';
+
 
 $app = AppFactory::create();
 $app->setBasePath('/ejercicio-aenima/api/public');
@@ -22,17 +24,14 @@ $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write(GenericResponse::obtain(true,"Aplicación Aenima"));
     return $response;
 });
-
 $app->group('/users', function (RouteCollectorProxy $group) {
-    $group->get('[/]', UsersController::class . ":getAll");     
-    $group->get('/{id}', UsersController::class . ":getOne");
-
-    $group->post('[/]', UsersController::class . ":addOne");
-
-    $group->put('/update', UsersController::class . ":updateOne");   
+    $group->get('[/]', UserController::class . ":getAll");     
+    $group->get('/{id}', UserController::class . ":getOne");
     
-    $group->delete('/{id}', UsersController::class . ":deleteOne");
+    $group->post('[/]', UserController::class . ":addOne");
+
 });
+
 
 $app->group('/products', function (RouteCollectorProxy $group) {
     $group->get('[/]', ProductsController::class . ":getAll");     

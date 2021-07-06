@@ -7,7 +7,7 @@ use MyCLabs\Enum\Enum;
 
 class UserRole extends Enum
 {
-    const USUARIO = 2;    
+    const USER = 2;    
     const ADMIN = 1;
 
     public static function IsValidArea($area)
@@ -15,7 +15,7 @@ class UserRole extends Enum
         switch ($area) {
             case "ADMIN":
                 return true;            
-            case "USUARIO":
+            case "USER":
                 return true;
             default:
                 return false;
@@ -27,8 +27,8 @@ class UserRole extends Enum
         switch ($role) {
             case UserRole::ADMIN:
                 return "ADMIN";            
-            case UserRole::USUARIO:
-                return "USUARIO";
+            case UserRole::USER:
+                return "USER";
         }
     }
 
@@ -37,8 +37,8 @@ class UserRole extends Enum
         switch ($role) {
             case "ADMIN":
                 return UserRole::ADMIN;           
-            case "USUARIO":
-                return UserRole::USUARIO;
+            case "USER":
+                return UserRole::USER;
             default:
                 return false;
         }

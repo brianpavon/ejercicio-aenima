@@ -1,0 +1,324 @@
+{
+	"info": {
+		"_postman_id": "93890bd2-4125-4c65-b0d0-1e9ce265e0c1",
+		"name": "Aenima Ejercicio Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_aenima}}products/",
+							"host": [
+								"{{url_aenima}}products"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_aenima}}products/1",
+							"host": [
+								"{{url_aenima}}products"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add new product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token_admin_aenima}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Casco de niño",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Lo mejor",
+									"type": "text"
+								},
+								{
+									"key": "img",
+									"type": "file",
+									"src": "/C:/Users/brian/Downloads/descarga (1).jfif"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url_aenima}}products/",
+							"host": [
+								"{{url_aenima}}products"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token_admin_aenima}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "img",
+									"type": "file",
+									"src": "/C:/Users/brian/Downloads/D_NQ_NP_906438-MLA45213655197_032021-O.webp"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url_aenima}}products/update-image/7",
+							"host": [
+								"{{url_aenima}}products"
+							],
+							"path": [
+								"update-image",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modify Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token_admin_aenima}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "data",
+									"value": "{\"name\": \"Nuevo Casco Integral LS2\",\"description\": \"Nuevo Ingreso, excelente casco LS2\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url_aenima}}products/1",
+							"host": [
+								"{{url_aenima}}products"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delte one product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token_admin_aenima}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url_aenima}}products/3",
+							"host": [
+								"{{url_aenima}}products"
+							],
+							"path": [
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete definitively one product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token_admin_aenima}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url_aenima}}products/delete-definitively/4",
+							"host": [
+								"{{url_aenima}}products"
+							],
+							"path": [
+								"delete-definitively",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "New User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "User",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "user@user.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "user",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url_aenima}}users/",
+							"host": [
+								"{{url_aenima}}users"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_aenima}}users/",
+							"host": [
+								"{{url_aenima}}users"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One (only admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token_admin_aenima}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url_aenima}}users/2",
+							"host": [
+								"{{url_aenima}}users"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "user@user.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "user",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url_aenima}}auth/",
+							"host": [
+								"{{url_aenima}}auth"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -7,8 +7,6 @@ use Components\GenericResponse;
 use Enum\UserRole;
 use Enum\Status;
 use Components\Token;
-use stdClass;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -20,7 +18,7 @@ class ProductsController
     public function getAll(Request $request, Response $response, $args)
     {
         try {
-            $products = Product::get();
+            $products = Product::where('products.status',Status::UNLOCKED)->get();
             if(!$products){
                 $response->getBody()->write(GenericResponse::obtain(false,"No se encontraron productos, verifique haber dado de alta los mismos."));
                 $response->withStatus(400);
@@ -52,6 +50,10 @@ class ProductsController
                 $response->getBody()->write(GenericResponse::obtain(false,"El id ingresado no corresponde a ningún producto en nuestra base de datos."));
                 $response->withStatus(400);
             }
+            else if($product->status == Status::LOCKED){
+                $response->getBody()->write(GenericResponse::obtain(false,"El producto fue dado de baja."));
+                $response->withStatus(400);
+            }
             else{
                 $response->getBody()->write(GenericResponse::obtain(true,"Se muestran todos los productos.",$product));
                 $response->withStatus(200);
@@ -70,21 +72,22 @@ class ProductsController
     {
         try {
             $name = $request->getParsedBody()['name'] ?? '';
-            $description = $request->getParsedBody()['description'] ?? '';            
+            $description = $request->getParsedBody()['description'] ?? '';
             $token = $request->getHeaderLine('token');
-            
+            $admin = User::where('id',Token::getId($token))->where('users.role',UserRole::ADMIN)->first();
             
             $file_exists = count($_FILES) != 0;
             if($file_exists){
                 $arrayNameFile = explode(".",$_FILES['img']['name']);
                 $extension = strtolower(end($arrayNameFile));                
             }
-            
-            //$idAdmin = Token::getId($token);
-            //$admin = User::where('id',$idAdmin)->first();
 
-            if($token != 1){
-                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede dar de alta productos. Verifique que sus credenciales sean correctas."));
+            if(!$token){
+                $response->getBody()->write(GenericResponse::obtain(false,"No ingreso su token de identificación. Envíelo por el header."));
+                $response->withStatus(400);
+            }
+            else if(!$admin){
+                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede acceder a esta sección. Verifique que sus credenciales sean correctas."));
                 $response->withStatus(400);
             }
             else if(!$name){
@@ -96,11 +99,11 @@ class ProductsController
                 $response->withStatus(400);
             }
             else if(!$file_exists){
-                $response->getBody()->write(GenericResponse::obtain(false,"Cargue su foto de perfil."));
+                $response->getBody()->write(GenericResponse::obtain(false,"Cargue imagen del producto."));
                 $response->withStatus(400);
             }
-            else if($extension != "jpg" && $extension != "jpeg" && $extension != 'png'){
-                $response->getBody()->write(GenericResponse::obtain(false,"Verifique haber cargado un archivo. O elija un formato permitido de imagen (JPG,JPEG,PNG)."));
+            else if($extension != "jpg" && $extension != "jpeg" && $extension != 'png' && $extension != 'webp' && $extension != 'jfif'){
+                $response->getBody()->write(GenericResponse::obtain(false,"Verifique haber cargado un archivo. O elija un formato permitido de imagen (JPG,JPEG,PNG,WEBP,JFIF)."));
                 $response->withStatus(400);
             }
             else{                
@@ -111,7 +114,7 @@ class ProductsController
                 
                 
                 $newProduct->save();
-                $picturesProducts = __DIR__.'/../../products/'.'product-'.$newProduct->id.'/';
+                $picturesProducts = '../products/'.'product-'.$newProduct->id.'/';
                 $namePicture = date("d-m-Y-U", strtotime('now')).'-'.'product-id-'.$newProduct->id.'.'.$extension;
                 if(!file_exists($picturesProducts)){
                     mkdir($picturesProducts,0777,true);
@@ -142,11 +145,16 @@ class ProductsController
         try {
             $id = $args['id'] ?? '';
             $modifiedProduct = Product::where('id',$id)->first();
-            $token = $request->getHeaderLine('token');
-
             $file_exists = count($_FILES) != 0;           
-            if($token != 1){
-                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede actualizar las imágenes. Verifique que sus credenciales sean correctas."));
+            $token = $request->getHeaderLine('token');
+            $admin = User::where('id',Token::getId($token))->where('users.role',UserRole::ADMIN)->first();
+
+            if(!$token){
+                $response->getBody()->write(GenericResponse::obtain(false,"No ingreso su token de identificación. Envíelo por el header."));
+                $response->withStatus(400);
+            }
+            else if(!$admin){
+                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede acceder a esta sección. Verifique que sus credenciales sean correctas."));
                 $response->withStatus(400);
             }
             else if(empty($id) || !is_numeric($id)){
@@ -168,12 +176,12 @@ class ProductsController
             else{
                 $arrayNameFile = explode(".",$_FILES['img']['name']);
                 $extension = strtolower(end($arrayNameFile));
-                if($extension != "jpg" && $extension != "jpeg" && $extension != 'png'){
-                    $response->getBody()->write(GenericResponse::obtain(false,"Verifique haber cargado un archivo. O elija un formato permitido de imagen (JPG,JPEG,PNG).",'Extension del archivo subido: '.$extension));
+                if($extension != "jpg" && $extension != "jpeg" && $extension != 'png' && $extension != 'webp' && $extension != 'jfif'){
+                    $response->getBody()->write(GenericResponse::obtain(false,"Verifique haber cargado un archivo. O elija un formato permitido de imagen (JPG,JPEG,PNG,WEBP,JFIF).",'Extension del archivo subido: '.$extension));
                     $response->withStatus(400);
                 }
                 else{
-                    $picturesProducts = __DIR__.'/../../products/'.'product-'.$modifiedProduct->id.'/';
+                    $picturesProducts = '../products/'.'product-'.$modifiedProduct->id.'/';
                     $namePicture = date("d-m-Y-U", strtotime('now')).'-'.'product-id-'.$modifiedProduct->id.'.'.$extension;
                     if(!file_exists($picturesProducts)){
                         mkdir($picturesProducts,0777,true);
@@ -207,11 +215,16 @@ class ProductsController
         try {
             $id = $args['id'] ?? '';
             $modifiedProduct = Product::where('id',$id)->first();
+            $data = $request->getParsedBody()['data'] ?? null;            
             $token = $request->getHeaderLine('token');
-            $data = $request->getParsedBody()['data'] ?? null;
-            
-            if($token != 1){
-                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede realizar modificaciones. Verifique que sus credenciales sean correctas."));
+            $admin = User::where('id',Token::getId($token))->where('users.role',UserRole::ADMIN)->first();
+
+            if(!$token){
+                $response->getBody()->write(GenericResponse::obtain(false,"No ingreso su token de identificación. Envíelo por el header."));
+                $response->withStatus(400);
+            }
+            else if(!$admin){
+                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede acceder a esta sección. Verifique que sus credenciales sean correctas."));
                 $response->withStatus(400);
             }
             else if(empty($id) || !is_numeric($id)){
@@ -266,11 +279,14 @@ class ProductsController
             $id = $args['id'] ?? '';
             $product = Product::where('id',$id)->first();
             $token = $request->getHeaderLine('token');
-            
-            //$admin = User::where('id',Token::getId($token))->first();
+            $admin = User::where('id',Token::getId($token))->where('users.role',UserRole::ADMIN)->first();
 
-            if($token != 1){
-                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede eliminar productos. Verifique que sus credenciales sean correctas."));
+            if(!$token){
+                $response->getBody()->write(GenericResponse::obtain(false,"No ingreso su token de identificación. Envíelo por el header."));
+                $response->withStatus(400);
+            }
+            else if(!$admin){
+                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede acceder a esta sección. Verifique que sus credenciales sean correctas."));
                 $response->withStatus(400);
             }
             else if(empty($id) || !is_numeric($id)){
@@ -278,7 +294,7 @@ class ProductsController
                 $response->withStatus(400);
             }
             else if(!$product){
-                $response->getBody()->write(GenericResponse::obtain(false,"El id ingresado no corresponde a ningún producto en nuestra base de datos."));
+                $response->getBody()->write(GenericResponse::obtain(false,"El id ingresado no corresponde a ningún producto en nuestra base de datos. Verifique los datos ingresados o corrobore que ya haya sido eliminado."));
                 $response->withStatus(400);
             }
             else if($product->status == Status::LOCKED){
@@ -308,11 +324,14 @@ class ProductsController
             $id = $args['id'] ?? '';
             $product = Product::where('id',$id)->first();
             $token = $request->getHeaderLine('token');
-            
-            //$admin = User::where('id',Token::getId($token))->first();
+            $admin = User::where('id',Token::getId($token))->where('users.role',UserRole::ADMIN)->first();
 
-            if($token != 1){
-                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede eliminar productos. Verifique que sus credenciales sean correctas."));
+            if(!$token){
+                $response->getBody()->write(GenericResponse::obtain(false,"No ingreso su token de identificación. Envíelo por el header."));
+                $response->withStatus(400);
+            }
+            else if(!$admin){
+                $response->getBody()->write(GenericResponse::obtain(false,"Solo un administrador puede acceder a esta sección. Verifique que sus credenciales sean correctas."));
                 $response->withStatus(400);
             }
             else if(empty($id) || !is_numeric($id)){
