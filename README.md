@@ -4,7 +4,7 @@ Ejercicio backen para Aenima
 1)Ejecutar composer install dentro del directorio api, asi se pueden instalar las dependencias.
 2)Como servidor local uso xampp.
 3)Utilice el framework Slim, para armar las rutas de los endpoint.
-4)Empleé el ORM de larave, Eloquent.
+4)Empleé el ORM de Laravel, Eloquent, para todo lo referido a base de datos.
 5)En la carpeta de Postman están las variables del entorno que utilicé y además la colección con las urls.
 
 Si bien no lo solicitaba el ejercicio, simule que hay un usuario administrador que realiza los ABM, y un usuario
