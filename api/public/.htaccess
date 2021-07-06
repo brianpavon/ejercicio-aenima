@@ -1,0 +1,7 @@
+RewriteEngine On
+
+Header add Access-Control-Allow-Origin: "*"
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
+php_flag display_startup_errors off

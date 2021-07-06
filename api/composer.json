@@ -1,0 +1,26 @@
+{
+    "name": "brian/api",
+    "description": "Ejercicio Aenima",
+    "authors": [
+        {
+            "name": "Brian pavon",
+            "email": "brian.pavon@hotmail.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.4",
+        "illuminate/database": "^8.49",
+        "illuminate/events": "^8.49",
+        "firebase/php-jwt": "^5.4"
+    },
+    "autoload":{
+        "psr-4": {
+            "Config\\": "config",
+            "Components\\": "src/Components",
+            "Middlewares\\": "src/Middlewares",
+            "Models\\": "src/Models",
+            "Controllers\\": "src/Controllers"
+        }
+    }
+}
