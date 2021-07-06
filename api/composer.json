@@ -12,7 +12,8 @@
         "slim/psr7": "^1.4",
         "illuminate/database": "^8.49",
         "illuminate/events": "^8.49",
-        "firebase/php-jwt": "^5.4"
+        "firebase/php-jwt": "^5.4",
+        "myclabs/php-enum": "^1.8"
     },
     "autoload":{
         "psr-4": {
@@ -20,7 +21,8 @@
             "Components\\": "src/Components",
             "Middlewares\\": "src/Middlewares",
             "Models\\": "src/Models",
-            "Controllers\\": "src/Controllers"
+            "Controllers\\": "src/Controllers",
+            "Enum\\": "src/Enum"
         }
     }
 }

@@ -6,6 +6,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 use Config\Database;
 use Middlewares\JsonMiddleware;
+use Middlewares\CorsMiddleware;
 use Components\GenericResponse;
 
 use Controllers\ProductsController;
@@ -37,10 +38,12 @@ $app->group('/products', function (RouteCollectorProxy $group) {
     $group->get('[/]', ProductsController::class . ":getAll");     
     $group->get('/{id}', ProductsController::class . ":getOne");
 
+    $group->post('/update-image/{id}', ProductsController::class . ":updateImage");
     $group->post('[/]', ProductsController::class . ":addOne");
 
-    $group->put('/update', ProductsController::class . ":updateOne");   
+    $group->put('/{id}', ProductsController::class . ":updateOne");   
     
+    $group->delete('/delete-definitively/{id}', ProductsController::class . ":deleteDefinitively");
     $group->delete('/{id}', ProductsController::class . ":deleteOne");
 });
 
@@ -48,6 +51,7 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
     $group->post('[/]', LoginController::class . ":login");    
 });
 
+$app->add(new CorsMiddleware());
 $app->add(new JsonMiddleware());
 $app->addBodyParsingMiddleware();
 
