@@ -14,7 +14,7 @@ use Controllers\UsersController;
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
-$app->setBasePath('/aenima.ejercicio/api/public');
+$app->setBasePath('/ejercicio-aenima/api/public');
 new Database;
 
 $app->get('/', function (Request $request, Response $response, $args) {
